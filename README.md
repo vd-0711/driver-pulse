@@ -1,6 +1,6 @@
 # 🏆 Driver Pulse — AI-Powered Driver Analytics Platform
 
-**Uber She++ Hackathon Winning Solution — Team Velocity**
+**Uber She++ Hackathon Solution — Team Velocity**
 
 > *"Empowering rideshare drivers with data-driven insights for safer, more profitable driving."*
 
