@@ -35,11 +35,56 @@ Driver Pulse is an **AI-powered analytics platform** that helps rideshare driver
 
 ## 🏗️ Architecture
 
-```
-┌──────────────┐     ┌──────────────────┐     ┌───────────────┐     ┌──────────────┐     ┌───────────┐
-│  Raw Sensor  │────▶│ Signal Processing│────▶│ Event Fusion  │────▶│  Analytics   │────▶│ Dashboard │
-│    Data      │     │  & Cleaning      │     │ & Classification   │  Engine      │     │  (Streamlit)│
-└──────────────┘     └──────────────────┘     └───────────────┘     └──────────────┘     └───────────┘
+``` mermaid
+graph TD
+    subgraph "1. Data Acquisition Layer"
+        A1[3-Axis Accelerometer] -->|Raw G-Force Data| B1[Data Ingestion: load_data.py]
+        A2[Microphone/Audio Sensor] -->|dB Levels| B1
+        B1 -->|Validation & Normalization| C1[clean_data.py]
+    end
+
+    subgraph "2. Multi-Stage Signal Processing"
+        C1 --> D1[Stage 1: Median Filter]
+        D1 -->|Spike Removal| D2[Stage 2: Savitzky-Golay]
+        D2 -->|Peak Preservation| D3[Stage 3: EMA]
+        D3 -->|Trend Extraction| E1{Feature Engineering}
+        
+        E1 -->|Jerk Calculation| F1[accelerometer_analysis.py]
+        E1 -->|Frequency/Spike Analysis| F2[audio_analysis.py]
+    end
+
+    subgraph "3. Intelligence & Fusion Engine"
+        F1 & F2 --> G1[event_fusion.py]
+        G1 -->|Multi-sensor Correlation| G2[ML-Inspired Classification]
+        G2 -->|Confidence Scoring| H1[Event Logger]
+        
+        subgraph "Earnings Engine"
+            I1[velocity_model.py] -->|₹/hr Calculation| I2[goal_prediction.py]
+            I2 -->|Forecasting| J1[Analytics Engine]
+        end
+        H1 --> J1
+    end
+
+    subgraph "4. Delivery Layer (Streamlit Dashboard)"
+        J1 --> K1[Pipeline Orchestrator: main.py]
+        K1 --> L1[trip_summary.py]
+        
+        L1 --> M1[Dashboard: app.py]
+        
+        subgraph "UI Components"
+            M1 --> N1[Performance Overview]
+            M1 --> N2[Plotly Event Timeline]
+            M1 --> N3[Earnings Trends]
+            M1 --> N4[AI Insights / Leaderboard]
+        end
+    end
+
+    %% Styling
+    style A1 fill:#f9f,stroke:#333,stroke-width:2px
+    style A2 fill:#f9f,stroke:#333,stroke-width:2px
+    style M1 fill:#00CC96,stroke:#fff,stroke-width:4px,color:#fff
+    style G2 fill:#636EFA,stroke:#fff,color:#fff
+    style J1 fill:#EF553B,stroke:#fff,color:#fff
 ```
 
 ### Core Pipeline (`main.py`)
